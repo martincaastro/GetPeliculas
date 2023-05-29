@@ -22,6 +22,6 @@ namespace GetPeliculas.Models
         [JsonProperty("overview")]
         public string Descripcion { get; set; }
 
-        public List<string> ListaPeliculasSimilares { get; set; }
+        public List<String> ListaPeliculasSimilares { get; set; }
     }
 }

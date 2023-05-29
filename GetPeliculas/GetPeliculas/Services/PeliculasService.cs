@@ -2,6 +2,7 @@
 using GetPeliculas.Services;
 using Newtonsoft.Json;
 using RestSharp;
+using System.Reflection.Metadata.Ecma335;
 
 public class PeliculasService : IPeliculasService
 {
@@ -36,29 +37,35 @@ public class PeliculasService : IPeliculasService
             PuntuacionMedia = primeraPelicula.PuntuacionMedia,
             FechaEstreno = primeraPelicula.FechaEstreno,
             Descripcion = primeraPelicula.Descripcion,
-            ListaPeliculasSimilares = GetListaPeliculasSimilares(result.Results, primeraPelicula.Id)
+            ListaPeliculasSimilares = GetListaPeliculasSimilares(primeraPelicula.Id)
         };
 
         return movie;
     }
 
-    private List<string> GetListaPeliculasSimilares(List<Pelicula> PeliculasSimilares, int idPrimeraPelicula)
+    private List<string> GetListaPeliculasSimilares(int peliculaId)
     {
+        RestClient client = new RestClient("https://api.themoviedb.org/3");
+        RestRequest request = new RestRequest($"movie/{peliculaId}/similar");
+        request.AddParameter("api_key", apiKey);
+
+        RestResponse response = client.Get(request);
+
+        Peliculas result = JsonConvert.DeserializeObject<Peliculas>(response.Content);
+
         List<string> peliculasSimilares = new List<string>();
 
-        for (int i = 0; i < PeliculasSimilares.Count && peliculasSimilares.Count < 5; i++)
+        foreach (Pelicula pelicula in result.Results)
         {
-            Pelicula similar = PeliculasSimilares[i];
+            if (pelicula.Id == peliculaId) { continue; }
 
-            if (similar.Id == idPrimeraPelicula)
-            {
-                continue;
-            }
+            if (peliculasSimilares.Count == 5) { break; }
 
-            string title = similar.Titulo;
-            string fechaEstreno = string.IsNullOrEmpty(similar.FechaEstreno) ? "" : $" ({Convert.ToDateTime(similar.FechaEstreno).Year})";
+            string title = pelicula.Titulo;
+            string fechaEstreno = string.IsNullOrEmpty(pelicula.FechaEstreno) ? "" : $" ({Convert.ToDateTime(pelicula.FechaEstreno).Year})";
 
             peliculasSimilares.Add($"{title}{fechaEstreno}");
+
         }
 
         return peliculasSimilares;
