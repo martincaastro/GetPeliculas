@@ -42,28 +42,6 @@ public class PeliculasService : IPeliculasService
         return movie;
     }
 
-    //private string GetPeliculasSimilares(List<Pelicula> PeliculasSimilares, int idPrimeraPelicula)
-    //{
-    //    List<string> peliculasSimilares = new List<string>();
-
-    //    for (int i = 0; i < PeliculasSimilares.Count && peliculasSimilares.Count < 5; i++)
-    //    {
-    //        Pelicula similar = PeliculasSimilares[i];
-
-    //        if (similar.Id == idPrimeraPelicula)
-    //        {
-    //            continue;
-    //        }
-
-    //        string title = similar.Titulo;
-    //        string fechaEstreno = string.IsNullOrEmpty(similar.FechaEstreno) ? "" : $" ({Convert.ToDateTime(similar.FechaEstreno).Year})";
-
-    //        peliculasSimilares.Add($"{title}{fechaEstreno}");
-    //    }
-
-    //    return string.Join(", ", peliculasSimilares);
-    //}
-
     private List<string> GetListaPeliculasSimilares(List<Pelicula> PeliculasSimilares, int idPrimeraPelicula)
     {
         List<string> peliculasSimilares = new List<string>();
